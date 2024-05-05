@@ -78,7 +78,7 @@ public class FlightTracker
 		
 			var airportTags = jsonArray.Where(n=>n["estArrivalAirport"]!=null).Select(n=>n["estArrivalAirport"].ToString());
 			
-			if (airportTags.Last().IndexOfAny(numbers)!=-1)
+			if (airportTags.Last().IndexOfAny(numbers)==-1)
 			{
 				return _wordTagDictionary[airportTags.Last()];
 			}
@@ -92,5 +92,4 @@ public class FlightTracker
 			throw new Exception();
 		}
 	}
-
 }
