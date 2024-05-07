@@ -4,7 +4,8 @@ using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
-using Newtonsoft.Json;
+using Microsoft.Extensions.Caching.Memory;
+using MuskMotions.Models;
 
 
 namespace MuskMotions.Controllers;
@@ -20,11 +21,6 @@ public class HomeController : Controller
 	public async Task<IActionResult> Home()
 	{
 		var planes = await _flightTracker.GetAirplanesAsync();
-		foreach (var item in planes)
-		{
-			System.Console.WriteLine(item.Latitude);
-			System.Console.WriteLine(item.Longitude);
-		}
-		return View();
+		return View(planes);
 	}
 }

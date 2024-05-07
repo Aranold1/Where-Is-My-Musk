@@ -7,16 +7,14 @@ using MuskMotions.Models;
 public class FlightTracker
 {
 	readonly ConcurrentDictionary<string,double[]> _wordTagDictionary;
-	readonly ConcurrentDictionary<string,double[]> _wordNumericTagDictionary;
 	readonly IMemoryCache _imemoryCahce;
 	
 	readonly CancellationTokenSource cancellationTokenSource = new CancellationTokenSource();
 
-	public FlightTracker(ConcurrentDictionary<string,double[]> wordTagDictionary,ConcurrentDictionary<string,double[]> wordNumericTagDictionary,IMemoryCache cache) 
+	public FlightTracker(ConcurrentDictionary<string,double[]> wordTagDictionary,IMemoryCache cache) 
 	{
 		_imemoryCahce = cache;
 		_wordTagDictionary = wordTagDictionary;
-		_wordNumericTagDictionary = wordNumericTagDictionary; 
 	}
 	
 	
@@ -60,7 +58,6 @@ public class FlightTracker
 	}
 	async Task<double[]> GetPlaneCoordinatesAsync(string Icao)
 	{
-		var numbers = new char[]{'0','1','2','3','4','5','6','7','8','9'};
 		var openSkyClient = new HttpClient();
 	
 
@@ -72,20 +69,14 @@ public class FlightTracker
 		{	
 			var lastFlightsFor30DaysJson = await openSkyClient.
 		GetAsync($"https://opensky-network.org/api/flights/aircraft?icao24={Icao.ToLower()}&begin={unixTimeNow-twentyNineDaysUnixTime}&end={unixTimeNow}");
-			System.Console.WriteLine(await lastFlightsFor30DaysJson.Content.ReadAsStringAsync());
+			
 			lastFlightsFor30DaysJson.EnsureSuccessStatusCode();
 			var jsonArray = JsonNode.Parse(await @lastFlightsFor30DaysJson.Content.ReadAsStringAsync()).AsArray();
 		
-			var airportTags = jsonArray.Where(n=>n["estArrivalAirport"]!=null).Select(n=>n["estArrivalAirport"].ToString());
-			
-			if (airportTags.Last().IndexOfAny(numbers)==-1)
-			{
-				return _wordTagDictionary[airportTags.Last()];
-			}
-			else
-			{
-				return _wordNumericTagDictionary[airportTags.Last()];
-			}
+			var airportTagsForLast30Days = jsonArray.Where(n=>n["estArrivalAirport"]!=null).Select(n=>n["estArrivalAirport"].ToString());
+			var numbers = new char[]{'0','1','2','3','4','5','6','7','8','9'};
+
+			return _wordTagDictionary[airportTagsForLast30Days.Last()];
 		}
 		catch
 		{
