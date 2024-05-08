@@ -18,7 +18,7 @@ public class FlightTracker
 	}
 	
 	
-	public async Task<List<Airplane>> GetAirplanesAsync()
+	public async ValueTask<List<Airplane>> GetAirplanesAsync()
 	{
 		if (_imemoryCahce.TryGetValue("airplanes",out List<Airplane> airplanes))
 		{
@@ -41,8 +41,8 @@ public class FlightTracker
 				var airPlane = new Airplane()
 				{
 					Icao = icaoCodes[i],
-					Latitude = currnetCoordinates[0],
-					Longitude = currnetCoordinates[1],
+					Latitude = currnetCoordinates[0].ToString().Replace(',','.'),
+					Longitude = currnetCoordinates[1].ToString().Replace(',','.'),
 					//at this point all plane gonna have the same picture
 					Picture = ""
 				};
@@ -50,7 +50,6 @@ public class FlightTracker
 			}
 			catch
 			{
-				
 			}
 		}
 		_imemoryCahce.Set("airplanes",airplanes,TimeSpan.FromHours(2));
