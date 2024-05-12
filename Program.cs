@@ -38,9 +38,8 @@ app.MapControllerRoute(
 
 app.Run();
 
-ConcurrentDictionary<string,double[]> GetWordDictionary()
+ConcurrentDictionary<string,string[]> GetWordDictionary()
 {
-	
-	var jsonArray = File.ReadAllText("./airaports.json");
-	return JsonSerializer.Deserialize<ConcurrentDictionary<string,double[]>>(jsonArray);
+	var jsonArray = File.ReadAllText("./airports.json");
+	return JsonSerializer.Deserialize<ConcurrentDictionary<string,string[]>>(jsonArray);
 }

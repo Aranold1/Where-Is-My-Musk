@@ -1,0 +1,40 @@
+.wrapper {
+    display: flex;
+    height: 100vh;
+    border: 3px solid red;
+    justify-content: center;
+}
+
+.window{
+    margin: 20px;
+    height: 220px;
+    width: 380px;
+    border: blue 3px solid;
+}
+
+.crypto-window{
+    border:  solid 3px purple;
+    margin: 20px;
+    height: fit-content;
+    width: 460px;;
+}
+
+.name{
+    width:fit-content;
+    margin: auto;
+}
+
+.crypto-name{
+    margin: 10px
+}
+
+.crypto-adress{
+    margin: 6px;
+    width: fit-content;
+}
+
+
+
+.copy-btn:hover {
+    background-color: #333;
+}

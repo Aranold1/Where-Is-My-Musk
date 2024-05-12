@@ -19,16 +19,8 @@ public class HomeController : Controller
 	[Route("/")]
 	public async Task<IActionResult> Home()
 	{
-		var sw = new Stopwatch();
-		sw.Start();
 		var planes = await _flightTracker.GetAirplanesAsync();
-		foreach (var plane in planes)
-		{
-			System.Console.WriteLine(plane.Latitude);
-			System.Console.WriteLine(plane.Longitude);
-		}
-		sw.Stop();
-		return View(planes);
+        return View(planes);
 	}
 	[Route("/support")]
 	public async Task<IActionResult> Support()

@@ -6,18 +6,17 @@ using Microsoft.Extensions.Caching.Memory;
 using MuskMotions.Models;
 public class FlightTracker
 {
-	readonly ConcurrentDictionary<string,double[]> _wordTagDictionary;
+	readonly ConcurrentDictionary<string,string[]> _wordTagDictionary;
 	readonly IMemoryCache _imemoryCahce;
 	
 	readonly CancellationTokenSource cancellationTokenSource = new CancellationTokenSource();
 
-	public FlightTracker(ConcurrentDictionary<string,double[]> wordTagDictionary,IMemoryCache cache) 
+	public FlightTracker(ConcurrentDictionary<string,string[]> wordTagDictionary,IMemoryCache cache) 
 	{
 		_imemoryCahce = cache;
 		_wordTagDictionary = wordTagDictionary;
 	}
-	
-	
+
 	public async ValueTask<List<Airplane>> GetAirplanesAsync()
 	{
 		if (_imemoryCahce.TryGetValue("airplanes",out List<Airplane> airplanes))
@@ -41,8 +40,8 @@ public class FlightTracker
 				var airPlane = new Airplane()
 				{
 					Icao = icaoCodes[i],
-					Latitude = currnetCoordinates[0].ToString().Replace(',','.'),
-					Longitude = currnetCoordinates[1].ToString().Replace(',','.'),
+					Latitude = currnetCoordinates[0],
+					Longitude = currnetCoordinates[1],
 					//at this point all plane gonna have the same picture
 					Picture = ""
 				};
@@ -55,7 +54,7 @@ public class FlightTracker
 		_imemoryCahce.Set("airplanes",airplanes,TimeSpan.FromHours(2));
 		return airplanes;
 	}
-	async Task<double[]> GetPlaneCoordinatesAsync(string Icao)
+	async Task<string[]> GetPlaneCoordinatesAsync(string Icao)
 	{
 		var openSkyClient = new HttpClient();
 	
