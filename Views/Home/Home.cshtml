@@ -9,7 +9,6 @@
 <div id='map'></div>
 <script src='https://cdnjs.cloudflare.com/ajax/libs/jquery/3.1.1/jquery.min.js'></script>
 <script>
-    
 
     var map = L.map('map').setView([33.9425222,-100.4071611], 4);
     
@@ -20,14 +19,13 @@
     var LeafIcon = L.Icon.extend({
         options: {
             shadowUrl: 'leaf-shadow.png',
-            iconSize: [38, 95],
+            iconSize: [1, 1],
             shadowSize: [50, 64],
-            iconAnchor: [22, 94],
+            iconAnchor: [0, 0],
             shadowAnchor: [4, 62],
-            popupAnchor: [-3, -76]
+            popupAnchor: [0, 0]
         }
     });
-
   
     var airplaneIcon = L.icon({
         iconUrl: '@Url.Content("~/airplane.png")',
@@ -36,6 +34,7 @@
         shadowAnchor: [4, 62],  // the same for the shadow
         popupAnchor: [0, 0] // point from which the popup should open relative to the iconAnchor
     });
+
     $.ajax({
         url: '/Home/GetBranch', 
         success: function (data) {
@@ -47,11 +46,9 @@
             });
         },
     });
-        
-    
-    //L.marker([51.49, -0.1], { icon: orangeIcon }).bindPopup("I am an orange leaf.").addTo(map);
 
 </script>
+
 @foreach(var plane in Model)
 {
     <script>
