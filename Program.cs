@@ -12,7 +12,6 @@ var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
 builder.Services.AddControllersWithViews();
 builder.Services.AddMemoryCache();
-
 builder.Services.AddSingleton<FlightTracker>(f=>new FlightTracker(GetWordDictionary(),f.GetRequiredService<IMemoryCache>()));
 
 var app = builder.Build();

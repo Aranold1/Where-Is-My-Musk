@@ -1,14 +1,14 @@
 .wrapper {
     display: flex;
-    height: 100vh;
+    height: 100%;
     border: 3px solid red;
     justify-content: center;
 }
 
 .window{
     margin: 20px;
-    height: 220px;
-    width: 380px;
+    height: fit-content;
+    width: fit-content;
     border: blue 3px solid;
 }
 
@@ -16,7 +16,7 @@
     border:  solid 3px purple;
     margin: 20px;
     height: fit-content;
-    width: 460px;;
+    width: fit-content;
 }
 
 .name{
@@ -24,11 +24,11 @@
     margin: auto;
 }
 
-.crypto-name{
+.crout-finding-name{
     margin: 10px
 }
 
-.crypto-adress{
+.crout-finding{
     margin: 6px;
     width: fit-content;
 }
