@@ -56,6 +56,11 @@
 @foreach(var plane in Model)
 {
     <script>
-        L.marker([@plane.Latitude, @plane.Longitude], { icon: airplaneIcon }).bindPopup("Plane icao: @plane.Icao").addTo(map);
+        try{
+            L.marker([@plane.Latitude, @plane.Longitude], { icon: airplaneIcon }).bindPopup("Plane icao: @plane.Icao").addTo(map);
+        }
+        catch (error){
+            console.error(error);
+        }
     </script>
 }
