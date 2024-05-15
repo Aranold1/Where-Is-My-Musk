@@ -22,6 +22,7 @@ public class FlightTracker
 		{
 			return airplanesCache;
 		}
+		
 		airplanes = new List<Airplane>();
 
 		string[] icaoCodes = new string[]
@@ -32,7 +33,9 @@ public class FlightTracker
 			"A0DAC5", // 2002 Boeing 737-800
 			"A572B9"  // 2004 Gulfstream G450
 		};
+		
 		var addAirplanesToListTasks = new List<Task>();
+
 		for (int i = 0; i < icaoCodes.Length; i++)
 		{
 			var addAirplanesToListTask = AddAirPlanesToListAsync(icaoCodes[i]);
@@ -40,6 +43,7 @@ public class FlightTracker
 		}
 		await Task.WhenAll(addAirplanesToListTasks);
 		_imemoryCahce.Set("airplanes",airplanes,TimeSpan.FromMinutes(10));
+		
 		return airplanes;
 	}
 
@@ -57,7 +61,6 @@ public class FlightTracker
 				response.EnsureSuccessStatusCode();
 				var jsonArray = JsonNode.Parse(await response.Content.ReadAsStringAsync()).AsArray();
 				var airportTagsForLast30Days = jsonArray.Where(n=>n["estArrivalAirport"]!=null).Select(n=>n["estArrivalAirport"].ToString());
-				var numbers = new char[]{'0','1','2','3','4','5','6','7','8','9'};
 				var plane = new Airplane
 				{
 					Icao = icao,
