@@ -1,4 +1,5 @@
 using System.Collections.Concurrent;
+using System.ComponentModel.Design.Serialization;
 using System.Text.Json.Nodes;
 using Microsoft.Extensions.Caching.Memory;
 using Microsoft.VisualBasic;
@@ -15,25 +16,21 @@ public class FlightTracker
 		_wordTagDictionary = wordTagDictionary;
 	}
 
-
+	string[] icaoCodes = new string[]
+	{
+		"a835af", // 2015 Gulfstream G650ER
+		"a2ae0a", // 2007 Gulfstream G550
+		"a64304", // 2004 Gulfstream G550
+		"A0DAC5", // 2002 Boeing 737-800
+		"A572B9"  // 2004 Gulfstream G450
+	};
 	public async ValueTask<List<Airplane>> GetAirplanesAsync()
 	{
 		if (_imemoryCahce.TryGetValue("airplanes",out List<Airplane> airplanesCache))
 		{
 			return airplanesCache;
 		}
-		
-		airplanes = new List<Airplane>();
 
-		string[] icaoCodes = new string[]
-		{
-			"a835af", // 2015 Gulfstream G650ER
-			"a2ae0a", // 2007 Gulfstream G550
-			"a64304", // 2004 Gulfstream G550
-			"A0DAC5", // 2002 Boeing 737-800
-			"A572B9"  // 2004 Gulfstream G450
-		};
-		
 		var addAirplanesToListTasks = new List<Task>();
 
 		for (int i = 0; i < icaoCodes.Length; i++)
@@ -41,9 +38,12 @@ public class FlightTracker
 			var addAirplanesToListTask = AddAirPlanesToListAsync(icaoCodes[i]);
 			addAirplanesToListTasks.Add(addAirplanesToListTask);
 		}
+		airplanes = new List<Airplane>();
+
+
 		await Task.WhenAll(addAirplanesToListTasks);
-		_imemoryCahce.Set("airplanes",airplanes,TimeSpan.FromMinutes(10));
-		
+		_imemoryCahce.Set("airplanes",airplanes,TimeSpan.FromMinutes(1));
+
 		return airplanes;
 	}
 
@@ -51,6 +51,7 @@ public class FlightTracker
 	{
 		var unixTimeNow = DateTimeOffset.UtcNow.ToUnixTimeSeconds();
 		//api allows take only 30 days interval 
+		var cts = new CancellationTokenSource();
 		var twentyNineDaysUnixTime = 2505600;
 		try
 		{
@@ -74,8 +75,8 @@ public class FlightTracker
 			}
 		}
 		catch
-			{
-
+		{
+			cts.Cancel();
 		}
 	}
 }

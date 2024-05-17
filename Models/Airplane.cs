@@ -8,7 +8,6 @@ namespace MuskMotions.Models
 	public class Airplane
 	{
 		public string Icao {get; set;}
-		public string Picture {get; set;}
 		public string Latitude {get; set;}
 		public string Longitude {get; set;}
 	}
