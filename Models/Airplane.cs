@@ -10,5 +10,6 @@ namespace MuskMotions.Models
 		public string Icao {get; set;}
 		public string Latitude {get; set;}
 		public string Longitude {get; set;}
+		public DateTime LastSeen { get; set;}
 	}
 }

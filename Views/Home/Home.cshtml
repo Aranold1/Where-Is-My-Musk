@@ -44,7 +44,7 @@
         {
             <text>
                 L.marker([@plane.Latitude, @plane.Longitude], { icon: airplaneIcon })
-                    .bindPopup("Plane ICAO: @plane.Icao")
+                    .bindPopup("Plane ICAO: @plane.Icao Last seen :@plane.LastSeen")
                     .addTo(map);
             </text>
         }

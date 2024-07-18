@@ -51,20 +51,23 @@ public class FlightTracker
     private async Task AddAirPlanesToListAsync(string icao)
     {
         var unixTimeNow = DateTimeOffset.UtcNow.ToUnixTimeSeconds();
-        var twentyNineDaysUnixTime = 2505600;
+        var twentyNineDaysInUnixTime = 2505600;
         try
         {
             using (var httpClient = new HttpClient())
             {
-                var response = await httpClient.GetAsync($"https://opensky-network.org/api/flights/aircraft?icao24={icao.ToLower()}&begin={unixTimeNow - twentyNineDaysUnixTime}&end={unixTimeNow}");
+                var response = await httpClient.GetAsync($"https://opensky-network.org/api/flights/aircraft?icao24={icao.ToLower()}&begin={unixTimeNow - twentyNineDaysInUnixTime}&end={unixTimeNow}");
                 response.EnsureSuccessStatusCode();
                 var jsonArray = JsonNode.Parse(await response.Content.ReadAsStringAsync()).AsArray();
                 var airportTagsForLast30Days = jsonArray.Where(n => n["estArrivalAirport"] != null).Select(n => n["estArrivalAirport"].ToString());
+                var lastSeensFor30DaysInUnixTime = jsonArray.Where(n => n["lastSeen"] != null).Select(n => int.Parse(n["lastSeen"].ToString()));
                 var plane = new Airplane
                 {
                     Icao = icao,
                     Latitude = _wordTagDictionary[airportTagsForLast30Days.Last()][0],
-                    Longitude = _wordTagDictionary[airportTagsForLast30Days.Last()][1]
+                    Longitude = _wordTagDictionary[airportTagsForLast30Days.Last()][1],
+                    LastSeen = DateTimeOffset.FromUnixTimeSeconds(lastSeensFor30DaysInUnixTime.Last()).DateTime
+
                 };
                 lock (airplanes)
                 {
