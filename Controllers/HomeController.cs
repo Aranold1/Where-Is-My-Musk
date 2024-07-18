@@ -26,9 +26,5 @@ public class HomeController : Controller
 		System.Console.WriteLine(sw);
 		return View(airplanes);
 	}
-	[Route("/support")]
-	public async Task<IActionResult> Support()
-	{
-		return View();
-	}
+
 }
