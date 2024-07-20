@@ -1,13 +1,7 @@
 using System.Collections.Concurrent;
-using System.Net.Http;
 using System.Text.Json.Nodes;
-using System.Threading;
-using System.Threading.Tasks;
 using Microsoft.Extensions.Caching.Memory;
 using MuskMotions.Models;
-using System.Collections.Generic;
-using System.Linq;
-using System;
 
 public class FlightTracker
 {
@@ -58,6 +52,7 @@ public class FlightTracker
             {
                 var response = await httpClient.GetAsync($"https://opensky-network.org/api/flights/aircraft?icao24={icao.ToLower()}&begin={unixTimeNow - twentyNineDaysInUnixTime}&end={unixTimeNow}");
                 response.EnsureSuccessStatusCode();
+
                 var jsonArray = JsonNode.Parse(await response.Content.ReadAsStringAsync()).AsArray();
                 var airportTagsForLast30Days = jsonArray.Where(n => n["estArrivalAirport"] != null).Select(n => n["estArrivalAirport"].ToString());
                 var lastSeensFor30DaysInUnixTime = jsonArray.Where(n => n["lastSeen"] != null).Select(n => int.Parse(n["lastSeen"].ToString()));
@@ -83,8 +78,7 @@ public class FlightTracker
 
     private void StartCacheRefreshTimer()
     {
-        // Set timer to refresh cache 40 seconds (20 seconds buffer + 20 seconds before expiration) before cache expiration
-        var dueTime = TimeSpan.FromMinutes(5);
+        var dueTime = TimeSpan.FromMinutes(1);
         var period = TimeSpan.FromMinutes(1);
 
         _refreshTimer = new Timer(async _ => await RefreshCache(), null, dueTime, period);
@@ -101,6 +95,10 @@ public class FlightTracker
         catch (Exception ex)
         {
             Console.WriteLine($"Error refreshing cache: {ex.Message}");
+        }
+        finally
+        {
+            Console.WriteLine(DateTime.Now);
         }
     }
 }

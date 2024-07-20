@@ -11,7 +11,7 @@
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
 <script>
-    $(document).ready(function() {
+    $(document).ready(function () {
         var map = L.map('map').setView([33.9425222, -100.4071611], 4);
 
         L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(map);
@@ -23,11 +23,10 @@
             popupAnchor: [0, -30] // точка, от которой будет открываться всплывающее окно относительно iconAnchor
         });
 
-
         $.ajax({
             url: '/Home/GetBranch',
-            success: function(data) {
-                data.forEach(function(item) {
+            success: function (data) {
+                data.forEach(function (item) {
                     var lat = item.branchGeoLocationLat;
                     var long = item.branchGeoLocationLong;
                     L.marker([lat, long], { icon: airplaneIcon })
@@ -35,7 +34,7 @@
                         .addTo(map);
                 });
             },
-            error: function(xhr, status, error) {
+            error: function (xhr, status, error) {
                 console.error("Error fetching branches: ", error);
             }
         });
@@ -43,9 +42,9 @@
         @foreach (var plane in Model)
         {
             <text>
-                L.marker([@plane.Latitude, @plane.Longitude], { icon: airplaneIcon })
-                    .bindPopup("Plane ICAO: @plane.Icao Last seen :@plane.LastSeen")
-                    .addTo(map);
+                    L.marker([@plane.Latitude, @plane.Longitude], { icon: airplaneIcon })
+                        .bindPopup("Plane ICAO: @plane.Icao \nLast seen: @plane.LastSeen")
+                        .addTo(map);
             </text>
         }
     });
