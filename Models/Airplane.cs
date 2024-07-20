@@ -11,5 +11,7 @@ namespace MuskMotions.Models
 		public string Latitude {get; set;}
 		public string Longitude {get; set;}
 		public DateTime LastSeen { get; set;}
+		
+		public List<DateTime> Lastseens {get;set;}
 	}
 }

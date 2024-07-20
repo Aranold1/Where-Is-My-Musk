@@ -1,4 +1,5 @@
 using System.Collections.Concurrent;
+using System.ComponentModel;
 using System.Diagnostics;
 using System.Diagnostics.Metrics;
 using System.Globalization;
@@ -40,5 +41,5 @@ app.Run();
 ConcurrentDictionary<string,string[]> GetWordDictionary()
 {
 	var jsonArray = File.ReadAllText("./airports.json");
-	return JsonSerializer.Deserialize<ConcurrentDictionary<string,string[]>>(jsonArray);
+	return JsonSerializer.Deserialize<ConcurrentDictionary<string,string[]>>(jsonArray)??throw new Exception("airports.json not exist");
 }

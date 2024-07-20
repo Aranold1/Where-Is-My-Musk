@@ -7,7 +7,7 @@ Logs/
 
 # Generated files
 project.lock.json
-.vs/
+.vscode/
 .sln
 ./sln
 sln
@@ -117,8 +117,4 @@ Backup*/
 UpgradeLog*.XML
 src/.vs/config/applicationhost.config
 
-# JetBrains Rider's auto generated files
-.idea/
-GptBlazor.sln
-
-.fake
+&.sln
