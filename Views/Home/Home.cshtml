@@ -1,0 +1,64 @@
+@using MuskMotions.Models
+@model List<MuskMotions.Models.Airplane>
+@{
+    Layout = "_Layout";
+}
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.6.0/dist/leaflet.css"
+    integrity="sha512-xwE/Az9zrjBIphAcBb3F6JVqxf46+CDLwfLMHloNu6KEQCAWi6HcDUbeOfBIptF7tcCzusKFjFw2yuvEpDL9wQ=="
+    crossorigin="" />
+<script src="https://unpkg.com/leaflet@1.6.0/dist/leaflet.js"
+    integrity="sha512-gZwIG9x3wUXg2hdXF6+rVkLF/0Vi9U8D2Ntg4Ga5I5BZpVkVxlJWbSQtXPSiUTtC0TjtGOmxa1AJPuV0CPthew=="
+    crossorigin=""></script>
+<link rel="stylesheet" href="~/css/home.css">
+
+<div id="map"></div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+<script>
+    $(document).ready(function () {
+        var map = L.map('map').setView([33.9425222, -100.4071611], 4);
+
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(map);
+
+        var airplaneIcon = L.icon({
+            iconUrl: '@Url.Content("~/airplane.png")',
+            iconSize: [45, 60], iconAnchor: [22, 30], popupAnchor: [0, -30]
+        })
+
+        $.ajax({
+            url: '/Home/GetBranch',
+            success: function (data) {
+                data.forEach(function (item) {
+                    var lat = item.branchGeoLocationLat;
+                    var long = item.branchGeoLocationLong;
+                    L.marker([lat, long], { icon: airplaneIcon })
+                        .bindPopup("I am the " + item.branchName + " leaf.")
+                        .addTo(map);
+                });
+            },
+            error: function (xhr, status, error) {
+                console.error("Error fetching branches: ", error);
+            }
+        });
+
+    @foreach (var plane in Model)
+    {
+        <text>
+                    L.marker([@plane.Latitude, @plane.Longitude], {icon: airplaneIcon })
+                    .bindPopup("Plane ICAO: @plane.Icao Last seen: @plane.LastSeen")
+                    .addTo(map);
+        </text>
+    }
+    });
+</script>
+
+<style>
+    #map {
+        width: 100%;
+        height: 100vh;
+    }
+
+    body {
+        overflow-y: hidden;
+    }
+</style>

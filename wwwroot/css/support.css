@@ -1,0 +1,39 @@
+.wrapper {
+    display: flex;
+    height: 100%;
+    border: 3px solid red;
+    justify-content: center;
+    flex-wrap: wrap;
+}
+
+.window {
+    margin: 20px;
+    height: fit-content;
+    width: fit-content;
+    border: blue 3px solid;
+}
+
+.crypto-window {
+    border: solid 3px purple;
+    margin: 20px;
+    height: fit-content;
+    width: fit-content;
+}
+
+.name {
+    width: fit-content;
+    margin: auto;
+}
+
+.crout-finding-name {
+    margin: 10px
+}
+
+.crout-finding {
+    margin: 6px;
+    width: fit-content;
+}
+
+.copy-btn:hover {
+    background-color: #333;
+}
