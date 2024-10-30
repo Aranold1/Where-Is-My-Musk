@@ -16,14 +16,16 @@ public class FlightTracker
 	public FlightTracker(ConcurrentDictionary<string, string[]> wordTagDictionary)
 	{
 		_wordTagDictionary = wordTagDictionary;
-		try
+		var path = "./data/airplanes.json";
+		if (File.Exists(path))
 		{
-			_airplanesFromLastSuccesfulResponse = JsonSerializer.Deserialize<Dictionary<string, Airplane>>(File.ReadAllText("./data/airplanes.json"));
+			_airplanesFromLastSuccesfulResponse = JsonSerializer.Deserialize<Dictionary<string, Airplane>>(File.ReadAllText(path));
 		}
-		catch
+		else
 		{
 			_airplanesFromLastSuccesfulResponse = new Dictionary<string, Airplane>();
 		}
+
 	}
 
 	private readonly string[] icaoCodes = new string[]
