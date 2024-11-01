@@ -14,9 +14,6 @@ namespace MuskMotions.Models
 
 		public List<DateTime> LastSeensForLast30Days { get; set; }
 		public List<string[]> CoordinatesForLast30Days { get; set; }
-		public Airplane()
-		{
-			LastSeen = LastSeensForLast30Days[0];
-		}
+
 	}
 }

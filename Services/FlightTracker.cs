@@ -25,7 +25,6 @@ public class FlightTracker
 		{
 			_airplanesFromLastSuccesfulResponse = new Dictionary<string, Airplane>();
 		}
-
 	}
 	//source https://grndcntrl.net/falconlanding/
 	private readonly string[] icaoCodes = new string[]
@@ -64,7 +63,6 @@ public class FlightTracker
 		{
 			return _airplanesFromLastSuccesfulResponse.Values.ToList();
 		}
-
 	}
 
 	private async Task<Airplane> GetAriplanesFromApiAsync(string icao)
@@ -88,7 +86,8 @@ public class FlightTracker
 					Latitude = _wordTagDictionary[airportTagsForLast30Days.First()][0],
 					Longitude = _wordTagDictionary[airportTagsForLast30Days.First()][1],
 					LastSeensForLast30Days = lastSeensFor30DaysInUnixTime.Select(x => DateTimeOffset.FromUnixTimeSeconds(x).DateTime).ToList(),
-					CoordinatesForLast30Days = airportTagsForLast30Days.Select(x => new string[] { _wordTagDictionary[x][0], _wordTagDictionary[x][1] }).ToList()
+					CoordinatesForLast30Days = airportTagsForLast30Days.Select(x => new string[] { _wordTagDictionary[x][0], _wordTagDictionary[x][1] }).ToList(),
+					LastSeen = DateTimeOffset.FromUnixTimeSeconds(lastSeensFor30DaysInUnixTime.First()).DateTime,
 				};
 				return plane;
 			}
@@ -97,8 +96,6 @@ public class FlightTracker
 				System.Console.WriteLine(ex.Message);
 				return null;
 			}
-
 		}
-
 	}
 }
