@@ -27,7 +27,7 @@ public class FlightTracker
 		}
 
 	}
-
+	//source https://grndcntrl.net/falconlanding/
 	private readonly string[] icaoCodes = new string[]
 	{
 		"a835af", // 2015 Gulfstream G650ER
@@ -74,30 +74,30 @@ public class FlightTracker
 
 		using (var httpClient = new HttpClient())
 		{
-
-			var response = await httpClient.GetAsync($"https://opensky-network.org/api/flights/aircraft?icao24={icao.ToLower()}&begin={unixTimeNow - twentyNineDaysInUnixTime}&end={unixTimeNow}");
 			try
 			{
-				response.EnsureSuccessStatusCode();
+				var response = await httpClient.GetAsync($"https://opensky-network.org/api/flights/aircraft?icao24={icao}&begin={unixTimeNow - twentyNineDaysInUnixTime}&end={unixTimeNow}");
 
+				response.EnsureSuccessStatusCode();
+				var jsonArray = JsonNode.Parse(await response.Content.ReadAsStringAsync()).AsArray();
+				var airportTagsForLast30Days = jsonArray.Where(n => n["estArrivalAirport"] != null).Select(n => n["estArrivalAirport"].ToString());
+				var lastSeensFor30DaysInUnixTime = jsonArray.Where(n => n["lastSeen"] != null).Select(n => int.Parse(n["lastSeen"].ToString()));
+				var plane = new Airplane
+				{
+					Icao = icao,
+					Latitude = _wordTagDictionary[airportTagsForLast30Days.First()][0],
+					Longitude = _wordTagDictionary[airportTagsForLast30Days.First()][1],
+					LastSeensForLast30Days = lastSeensFor30DaysInUnixTime.Select(x => DateTimeOffset.FromUnixTimeSeconds(x).DateTime).ToList(),
+					CoordinatesForLast30Days = airportTagsForLast30Days.Select(x => new string[] { _wordTagDictionary[x][0], _wordTagDictionary[x][1] }).ToList()
+				};
+				return plane;
 			}
-			catch
+			catch (Exception ex)
 			{
+				System.Console.WriteLine(ex.Message);
 				return null;
 			}
-			var jsonArray = JsonNode.Parse(await response.Content.ReadAsStringAsync()).AsArray();
-			var airportTagsForLast30Days = jsonArray.Where(n => n["estArrivalAirport"] != null).Select(n => n["estArrivalAirport"].ToString());
-			var lastSeensFor30DaysInUnixTime = jsonArray.Where(n => n["lastSeen"] != null).Select(n => int.Parse(n["lastSeen"].ToString()));
-			var plane = new Airplane
-			{
-				Icao = icao,
-				Latitude = _wordTagDictionary[airportTagsForLast30Days.Last()][0],
-				Longitude = _wordTagDictionary[airportTagsForLast30Days.Last()][1],
-				LastSeen = DateTimeOffset.FromUnixTimeSeconds(lastSeensFor30DaysInUnixTime.Last()).DateTime,
-				LastSeensForLast30Days = lastSeensFor30DaysInUnixTime.Select(x => DateTimeOffset.FromUnixTimeSeconds(x).DateTime).ToList(),
-				CoordinatesForLast30Days = airportTagsForLast30Days.Select(x => new string[] { _wordTagDictionary[x][0], _wordTagDictionary[x][1] }).ToList()
-			};
-			return plane;
+
 		}
 
 	}
